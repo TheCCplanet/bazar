@@ -1,8 +1,8 @@
 package db
 
 import (
-	model "bazar/internal/model"
-	"log"
+	"bazar/internal/model"
+	"bazar/internal/utils"
 )
 
 // func GetUserPasswordByUsername(){}
@@ -11,8 +11,6 @@ import (
 
 func GetUserbyUsername(username string) (*model.User, error) {
 	row := DB.QueryRow("SELECT id, username, password_hash FROM users WHERE username = $1", username)
-	log.Println("Row Requested from data base\n:", row)
-
 	user := &model.User{}
 	err := row.Scan(&user.ID, &user.Username, &user.Password_hash)
 	if err != nil {
@@ -22,6 +20,7 @@ func GetUserbyUsername(username string) (*model.User, error) {
 }
 
 func CreateUser(user *model.User) error {
+	user.Password_hash, _ = utils.HashPassword(user.Password_hash)
 	result := DB.QueryRow(
 		"INSERT INTO users (username, password_hash) VALUES ($1,$2) RETURNING id, create_at",
 		user.Username, user.Password_hash,

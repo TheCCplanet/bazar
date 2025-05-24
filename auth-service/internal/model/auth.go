@@ -1,4 +1,4 @@
-package modle
+package model
 
 type LoginRequest struct {
 	Username string `json:"username"`

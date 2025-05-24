@@ -20,10 +20,10 @@ form.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (res.ok) {
-      document.getElementById('result').innerText = 'Login successful!';
+      document.getElementById('result').innerText = data.message;
       // Save JWT or redirect
     } else {
-      document.getElementById('result').innerText = data.error || 'Login failed.';
+      document.getElementById('result').innerText = data.error || data.message;
     }
   } catch (err) {
     document.getElementById('result').innerText = 'Error connecting to auth service.';

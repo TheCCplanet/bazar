@@ -29,10 +29,10 @@ func main() {
 	}
 
 	http.HandleFunc("/auth", handlers.AuthHandler)
-	log.Println("auth service is succesfuly runed")
+	log.Println("auth service 👮")
 	err = http.ListenAndServe(":8081", nil)
 	if err != nil {
-		log.Fatal("Faild to start auth Service Lisener")
+		log.Fatal("Faild to start auth Service Lisener ")
 		return
 	}
 }

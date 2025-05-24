@@ -12,10 +12,9 @@ func RunMigrations() error {
 	update_at TIMESTAMP
 	);`
 
-	result, err := DB.Exec(CreateUsersTableQuery)
+	_, err := DB.Exec(CreateUsersTableQuery)
 	if err != nil {
 		log.Println("DataBase Error: Faild to Create users Table", err)
 	}
-	log.Println("DataBase Log:", result)
 	return err
 }

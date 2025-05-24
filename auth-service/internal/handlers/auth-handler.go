@@ -3,9 +3,7 @@ package handlers
 import (
 	modle "bazar/internal/model"
 	"bazar/internal/service"
-	"bazar/internal/utils"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -27,15 +25,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
 
-		// test
-		cookies := r.Cookies()
-		fmt.Println("cookies", cookies)
-		for _, cookie := range cookies {
-			fmt.Printf("نام: %s, مقدار: %s\n", cookie.Name, cookie.Value)
-		}
-
-		// test
-
 		var data modle.LoginRequest
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
@@ -43,7 +32,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		data.Password, err = utils.HashPassword(data.Password)
 		if err != nil {
 			log.Println("Faild to hash client:/n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -51,6 +39,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		loginResponse, err := service.Login(data)
 		if err != nil {
+			// if Login Failed
 			w.Write([]byte("Faild to authenticate User"))
 			log.Println("Login Error:\n", err)
 
@@ -64,7 +53,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		log.Println("token : \n", loginResponse.AccessToken)
 		http.SetCookie(w, &http.Cookie{
 			Name:     "Access-token",
 			Value:    loginResponse.AccessToken,
@@ -75,12 +63,18 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			MaxAge:   10000,
 		})
 
-		w.Header().Set("Content-Type", "application/json")
-		err = json.NewEncoder(w).Encode(loginResponse)
-		if err != nil {
-			log.Println("Faild to send login response:\n", loginResponse)
-		}
+		// err = json.NewEncoder(w).Encode(loginResponse)
+		// if err != nil {
+		// 	log.Printf("Failed to send login response: %v\n", err)
+		// 	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		// 	return
+		// }
 
+		err = service.SendNotification(w, http.StatusOK, "succes", "Login succesful ✅")
+		if err != nil {
+			log.Println("Faild to send notification,\n", err)
+			return
+		}
 		return
 	}
 }

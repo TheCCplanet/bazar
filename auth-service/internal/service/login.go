@@ -11,12 +11,16 @@ func Login(req modle.LoginRequest) (*modle.LoginResponse, error) {
 	log.Println("login func is Runed ...")
 	storedUser := &modle.User{}
 	storedUser, err := db.GetUserbyUsername(req.Username)
+	// dev test
+	h, _ := utils.HashPassword(req.Password)
+	log.Printf("Entered passwrod: %v \n Stored passwrod:%s", h, storedUser.Password_hash)
+
 	if err != nil {
 		log.Println("DataBase Error: faild to call stored user data by username:\n", err)
 		return nil, err
 	}
 
-	if err = utils.ComparePasswordAndHash(req.Username, storedUser.Password_hash); err != nil {
+	if err = utils.ComparePasswordAndHash(req.Password, storedUser.Password_hash); err != nil {
 		// Send Error and tell clents username or password is wronge
 		log.Println("faild to compair client password with stored pass:\n", err)
 		return nil, err

@@ -27,6 +27,9 @@ func InitDB(cfg DBConfig) error {
 	if err != nil {
 		return err
 	}
-	log.Println("DB.Ping() :", DB.Ping())
+	if DB.Ping() != nil {
+		log.Println("Data Base is OFF")
+	}
+	log.Println("DataBase successfuly runing ✅")
 	return DB.Ping()
 }
