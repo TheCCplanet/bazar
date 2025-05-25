@@ -20,7 +20,7 @@ func GetUserbyUsername(username string) (*model.User, error) {
 }
 
 func CreateUser(user *model.User) error {
-	user.Password_hash, _ = utils.HashPassword(user.Password_hash)
+	user.Password_hash = utils.HashPassword(user.Password_hash)
 	result := DB.QueryRow(
 		"INSERT INTO users (username, password_hash) VALUES ($1,$2) RETURNING id, create_at",
 		user.Username, user.Password_hash,

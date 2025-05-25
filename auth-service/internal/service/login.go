@@ -4,26 +4,36 @@ import (
 	"bazar/internal/db"
 	modle "bazar/internal/model"
 	"bazar/internal/utils"
+	"database/sql"
+	"errors"
 	"log"
+)
+
+var (
+	ErrUserNotFound      = errors.New("user_not_found")
+	ErrIncorrectPasswrod = errors.New("incorrect_passwrod")
 )
 
 func Login(req modle.LoginRequest) (*modle.LoginResponse, error) {
 	log.Println("login func is Runed ...")
 	storedUser := &modle.User{}
-	storedUser, err := db.GetUserbyUsername(req.Username)
-	// dev test
-	h, _ := utils.HashPassword(req.Password)
-	log.Printf("Entered passwrod: %v \n Stored passwrod:%s", h, storedUser.Password_hash)
-
+	storedUser, err := db.GetUserbyUsername(req.Username) // get user name from data base
 	if err != nil {
-		log.Println("DataBase Error: faild to call stored user data by username:\n", err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
 		return nil, err
 	}
+	// dev test
+	h := utils.HashPassword(req.Password) // hash password
+
+	log.Printf("Entered passwrod: %v \n Stored passwrod:%s \n passwrod : %s", h, storedUser.Password_hash, req.Password)
 
 	if err = utils.ComparePasswordAndHash(req.Password, storedUser.Password_hash); err != nil {
 		// Send Error and tell clents username or password is wronge
-		log.Println("faild to compair client password with stored pass:\n", err)
-		return nil, err
+
+		// log.Println("faild to compair client password with stored pass:\n", err)
+		return nil, ErrIncorrectPasswrod
 	}
 	// send AccessToken , TokenType, ExpiresIN
 	// and redirect client to the next path (home)

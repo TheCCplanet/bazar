@@ -4,6 +4,7 @@ import (
 	modle "bazar/internal/model"
 	"bazar/internal/service"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 )
@@ -11,8 +12,8 @@ import (
 // Access control 
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("connectin method:", r.Method)
-
+	log.Println("connectin method:", r.Method) // dev log
+	// Access control
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -25,7 +26,11 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+<<<<<<< HEAD
 // Access control 
+=======
+	// Access control
+>>>>>>> a3ec939 (fixed auth bugs)
 
 	if r.Method == http.MethodPost {
 
@@ -36,26 +41,30 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if err != nil {
-			log.Println("Faild to hash client:/n", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 		loginResponse, err := service.Login(data)
 		if err != nil {
-			// if Login Failed
-			w.Write([]byte("Faild to authenticate User"))
-			log.Println("Login Error:\n", err)
-
-			loginResponse, err = service.Register(&modle.User{
-				Username:      data.Username,
-				Password_hash: data.Password,
-			})
-			if err != nil {
-				log.Println("Faild to register user:\n", err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			if errors.Is(err, service.ErrIncorrectPasswrod) {
+				// If passwrod was wrong
+				log.Println("Incorrect password by client - \n", err)
+				service.SendNotification(w, http.StatusOK, "error", "Incorrect username or password")
 				return
 			}
+			if errors.Is(err, service.ErrUserNotFound) {
+				// If user not found , then register user
+				loginResponse, err = service.Register(&modle.User{
+					Username:      data.Username,
+					Password_hash: data.Password,
+				})
+				service.SendNotification(w, http.StatusOK, "succes", "New account, Registered succesfuly")
+				return
+			}
+			// if err != nil {
+			// 	log.Println("Faild to register user:\n", err)
+			// 	service.SendNotification(w, http.StatusBadRequest, "error", "Faild to register")
+			// 	return
+			// }
+			service.SendNotification(w, http.StatusOK, "succes", "New account was registered succesfuly")
+
 		}
 		http.SetCookie(w, &http.Cookie{
 			Name:     "Access-token",
