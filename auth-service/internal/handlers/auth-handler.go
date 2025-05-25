@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+// Access control 
+
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("connectin method:", r.Method)
 
@@ -22,6 +24,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
+
+// Access control 
 
 	if r.Method == http.MethodPost {
 
