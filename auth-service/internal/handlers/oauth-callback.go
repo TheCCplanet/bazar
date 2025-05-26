@@ -1,13 +1,32 @@
 package handlers
 
 import (
-	"io/ioutil"
+	"encoding/json"
+	"io"
+	"log"
 	"net/http"
 )
 
 func Callback(w http.ResponseWriter, r *http.Request) {
-	body, _ := ioutil.ReadAll(r.Body)
+	log.Println("Callback called ++++++++++++")
+
+	// نمایش query params
+	query := r.URL.Query()
+
+	// نمایش body (در صورتی که وجود داشته باشه)
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
+
+	// ساخت پاسخ ترکیبی
+	response := map[string]interface{}{
+		"query": query,
+		"body":  string(body),
+	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(body)
+	json.NewEncoder(w).Encode(response)
 }
