@@ -1,0 +1,6 @@
+auth-service/config/oauth-config.go
+auth-service/config/oauth-config.go
+client_secret_*.json
+*.json
+note
+auth-service/config/.gitignore

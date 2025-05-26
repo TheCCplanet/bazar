@@ -1,12 +1,15 @@
 package handlers
 
 import (
-	modle "bazar/internal/model"
+	"bazar/config"
+	"bazar/internal/model"
 	"bazar/internal/service"
 	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
+
+	_ "golang.org/x/oauth2"
 )
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,9 +29,14 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Access control
 
+	if r.URL.Query().Get("auth-service") == "google" {
+		url := config.GoogleOauthConfig.AuthCodeURL(config.RandomState)
+		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	}
+
 	if r.Method == http.MethodPost {
 
-		var data modle.LoginRequest
+		var data model.LoginRequest
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
 			log.Println("Error decoding Json:", err)
@@ -45,10 +53,14 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			if errors.Is(err, service.ErrUserNotFound) {
 				// If user not found , then register user
-				loginResponse, err = service.Register(&modle.User{
+				loginResponse, err = service.Register(&model.User{ // need to fix , login Respone never used !! bug
 					Username:      data.Username,
 					Password_hash: data.Password,
 				})
+				if err != nil {
+					log.Fatal("Faild to register the client:\n", err)
+					return
+				}
 				service.SendNotification(w, http.StatusOK, "succes", "New account, Registered succesfuly")
 				return
 			}

@@ -20,7 +20,7 @@ func main() {
 		DBName:   cfg.DBName,
 	})
 	if err != nil {
-		log.Println("innit db Error:", err)
+		log.Println("init db Error:", err)
 	}
 
 	if err = db.RunMigrations(); err != nil {
@@ -29,6 +29,7 @@ func main() {
 	}
 
 	http.HandleFunc("/auth", handlers.AuthHandler)
+	http.HandleFunc("/callback", handlers.Callback)
 	log.Println("auth service 👮")
 	err = http.ListenAndServe(":8081", nil)
 	if err != nil {
