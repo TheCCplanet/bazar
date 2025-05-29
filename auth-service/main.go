@@ -30,6 +30,7 @@ func main() {
 
 	http.HandleFunc("/auth", handlers.AuthHandler)
 	http.HandleFunc("/callback", handlers.Callback)
+	http.HandleFunc("/validate", handlers.ValidateTokenHandler)
 	log.Println("auth service 👮")
 	err = http.ListenAndServe(":8081", nil)
 	if err != nil {

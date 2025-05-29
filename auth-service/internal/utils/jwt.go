@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtKey = []byte("secret-key")
+var jwtKey = []byte("secret-key1")
 
 type Claims struct {
 	UserID int64 `json:"user_id"`
@@ -26,12 +26,12 @@ func GenerateAccessToken(userID int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtKey)
 }
-func verifyToken(tokenStr string, secret []byte) (*Claims, error) {
+func VerifyToken(tokenStr string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return secret, nil
+		return jwtKey, nil
 	})
 
 	if err != nil {

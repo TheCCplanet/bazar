@@ -15,6 +15,7 @@ import (
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("connectin method:", r.Method) // dev log
 	// Access control
+	// will be removed in cluster
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -33,6 +34,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		url := config.GoogleOauthConfig.AuthCodeURL(config.RandomState)
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 	}
+	cookie, _ := r.Cookie("access-token")
+	log.Println("cookie +++++:", cookie)
 
 	if r.Method == http.MethodPost {
 
@@ -73,7 +76,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 
 		}
 		http.SetCookie(w, &http.Cookie{
-			Name:     "Access-token",
+			Name:     "access-token",
 			Value:    loginResponse.AccessToken,
 			HttpOnly: true,
 			Secure:   false,
