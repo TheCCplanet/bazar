@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:17
+    container_name: product_postgres
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER:  product_user
+      POSTGRES_PASSWORD:  secret123
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+    ports:
+    - "5433:5432"
+    networks:
+    - product-network
+volumes:
+  postgres_data:
+
+networks:
+  product-network:
