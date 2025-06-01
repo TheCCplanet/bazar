@@ -51,7 +51,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			if errors.Is(err, service.ErrIncorrectPasswrod) {
 				// If passwrod was wrong
 				log.Println("Incorrect password by client - \n", err)
-				service.SendNotification(w, http.StatusOK, "error", "Incorrect username or password")
+				service.SendNotification(w, http.StatusOK, "error", "Incorrect username or password", "")
 				return
 			}
 			if errors.Is(err, service.ErrUserNotFound) {
@@ -64,7 +64,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 					log.Fatal("Faild to register the client:\n", err)
 					return
 				}
-				service.SendNotification(w, http.StatusOK, "succes", "New account, Registered succesfuly")
+				log.Println("Register was succesfuly")
+				service.SendNotification(w, http.StatusOK, "succes", "New account, Registered succesfuly", "/dashboard")
 				return
 			}
 			// if err != nil {
@@ -72,9 +73,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			// 	service.SendNotification(w, http.StatusBadRequest, "error", "Faild to register")
 			// 	return
 			// }
-			service.SendNotification(w, http.StatusOK, "succes", "New account was registered succesfuly")
-
 		}
+		log.Println("Log in was succesful")
 		http.SetCookie(w, &http.Cookie{
 			Name:     "access-token",
 			Value:    loginResponse.AccessToken,
@@ -92,7 +92,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		// 	return
 		// }
 
-		err = service.SendNotification(w, http.StatusOK, "succes", "Login succesful ✅")
+		err = service.SendNotification(w, http.StatusOK, "succes", "Login succesful ✅", "/home")
 		if err != nil {
 			log.Println("Faild to send notification,\n", err)
 			return

@@ -8,8 +8,8 @@ func RunMigrations() error {
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(255) UNIQUE NOT NULL,
 	password_hash TEXT NOT NULL,
-	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	update_at TIMESTAMP
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP
 	);`
 
 	_, err := DB.Exec(CreateUsersTableQuery)

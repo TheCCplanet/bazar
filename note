@@ -1,1 +1,262 @@
 background color : #02090a
+
+service :
+    auth-service:
+        login,register
+        jwt, refresh token
+        password, reset passwrod 
+    frontend:
+
+    user-service:
+        profiles
+        roles
+        user's public data
+    product-service:
+        add product by users
+        edit or delete products
+        product lists
+    auction-service:
+    order-service:
+    payment-service:
+    notification-service:
+    media-service:
+    admin-service:
+
+
+
+پروژه‌ای که ترکیبی از **خرید و فروش** و **مزایده** است، به چندین سرویس اصلی نیاز دارد. هر سرویس دیتابیس خاص خود را دارد. در ادامه، **سرویس‌های اصلی** و **ساختار دیتابیس پیشنهادی برای هرکدام** را کامل و دقیق می‌بینی.
+
+---
+
+## 🧩 لیست سرویس‌ها و دیتابیس‌ها
+
+### 1. 🔐 `auth-service`
+
+احراز هویت و مدیریت توکن‌ها
+
+#### 📊 دیتابیس:
+
+```sql
+-- کاربران احراز هویت شده
+CREATE TABLE accounts (
+  id UUID PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  is_verified BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- توکن‌های رفرش
+CREATE TABLE refresh_tokens (
+  id UUID PRIMARY KEY,
+  account_id UUID REFERENCES accounts(id) ON DELETE CASCADE,
+  token TEXT NOT NULL,
+  user_agent TEXT,
+  ip_address TEXT,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- کدهای تایید ایمیل
+CREATE TABLE email_verifications (
+  id UUID PRIMARY KEY,
+  account_id UUID REFERENCES accounts(id) ON DELETE CASCADE,
+  code VARCHAR(10) NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 2. 👤 `user-service`
+
+اطلاعات عمومی کاربر
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY,
+  account_id UUID UNIQUE NOT NULL,
+  username VARCHAR(255) UNIQUE,
+  full_name VARCHAR(255),
+  bio TEXT,
+  profile_image_url TEXT,
+  country VARCHAR(100),
+  is_seller BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE user_addresses (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(100),
+  address_line TEXT,
+  city VARCHAR(100),
+  postal_code VARCHAR(20),
+  country VARCHAR(100),
+  is_default BOOLEAN DEFAULT FALSE
+);
+```
+
+---
+
+### 3. 🛍️ `product-service`
+
+مدیریت محصولات عادی و قابل فروش
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE products (
+  id UUID PRIMARY KEY,
+  seller_id UUID NOT NULL, -- user_id
+  title VARCHAR(255),
+  description TEXT,
+  price NUMERIC(10, 2),
+  quantity INT DEFAULT 1,
+  image_url TEXT,
+  category VARCHAR(100),
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 4. 🔨 `auction-service`
+
+مدیریت مزایده‌ها
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE auctions (
+  id UUID PRIMARY KEY,
+  seller_id UUID NOT NULL,
+  product_title VARCHAR(255),
+  description TEXT,
+  start_price NUMERIC(10, 2),
+  image_url TEXT,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  winner_id UUID,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE bids (
+  id UUID PRIMARY KEY,
+  auction_id UUID REFERENCES auctions(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL,
+  bid_amount NUMERIC(10, 2) NOT NULL,
+  bid_time TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 5. 🛒 `order-service`
+
+مدیریت سفارش‌ها (از فروشگاه یا برنده مزایده)
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE orders (
+  id UUID PRIMARY KEY,
+  buyer_id UUID NOT NULL,
+  seller_id UUID NOT NULL,
+  product_id UUID,
+  auction_id UUID,
+  quantity INT DEFAULT 1,
+  total_price NUMERIC(10, 2),
+  status VARCHAR(50) DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 6. 💬 `chat-service` (اختیاری ولی مفید)
+
+چت بین خریدار و فروشنده
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE chat_rooms (
+  id UUID PRIMARY KEY,
+  buyer_id UUID,
+  seller_id UUID,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE messages (
+  id UUID PRIMARY KEY,
+  room_id UUID REFERENCES chat_rooms(id) ON DELETE CASCADE,
+  sender_id UUID,
+  content TEXT,
+  sent_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 7. ⭐ `rating-service`
+
+امتیازدهی به فروشنده یا خریدار
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE ratings (
+  id UUID PRIMARY KEY,
+  rater_id UUID,
+  ratee_id UUID,
+  rating INT CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+### 8. 💳 `payment-service`
+
+مدیریت تراکنش‌ها (اگر نیاز بود مستقیم پرداخت مدیریت شود)
+
+#### 📊 دیتابیس:
+
+```sql
+CREATE TABLE payments (
+  id UUID PRIMARY KEY,
+  order_id UUID,
+  buyer_id UUID,
+  amount NUMERIC(10, 2),
+  status VARCHAR(50),
+  payment_method VARCHAR(50),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## 📚 جمع‌بندی نهایی
+
+| سرویس             | نقش اصلی                    |
+| ----------------- | --------------------------- |
+| `auth-service`    | احراز هویت و توکن‌ها        |
+| `user-service`    | پروفایل کاربران             |
+| `product-service` | محصولات قابل فروش عادی      |
+| `auction-service` | مزایده و پیشنهاد قیمت       |
+| `order-service`   | مدیریت خرید و سفارش         |
+| `chat-service`    | گفتگو میان فروشنده و خریدار |
+| `rating-service`  | امتیازدهی و نظرات کاربران   |
+| `payment-service` | مدیریت پرداخت‌ها (اختیاری)  |
+
+---
+
+اگه دوست داری، برای هر سرویس **API Endpointها** یا مدل‌ها و **migration** کامل Go/PostgreSQL رو هم می‌نویسم. کدوم سرویس رو اول بنویسیم؟

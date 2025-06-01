@@ -21,7 +21,7 @@ form.addEventListener('submit', async (e) => {
 
     if (res.ok) {
       document.getElementById('result').innerText = data.message;
-      // Save JWT or redirect
+      window.location = data.redirect
     } else {
       document.getElementById('result').innerText = data.error || data.message;
     }
