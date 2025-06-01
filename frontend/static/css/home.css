@@ -9,6 +9,7 @@ html, body {
   color: white;
   font-family: 'Segoe UI', sans-serif;
   overflow-x: hidden;
+  min-height: 200vh; /* Added for scrolling demo */
 }
 
 /* Navbar */
@@ -16,9 +17,9 @@ html, body {
   position: sticky;
   top: 0;
   width: 100%;
-  padding: 20px 60px;
+  padding: 15px 60px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(12px);
@@ -47,6 +48,74 @@ nav a {
   color: white;
   text-decoration: none;
   opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+nav a:hover {
+  opacity: 1;
+}
+
+/* Right section with icons */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notification-icon {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: white;
+  stroke-width: 1.5;
+  opacity: 0.85;
+  transition: all 0.3s;
+}
+
+.notification-icon:hover svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff4757;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-pic {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+}
+
+.profile-pic:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Card Container */
@@ -111,4 +180,23 @@ nav a {
 .photo-details .time {
   font-size: 0.85rem;
   color: #aaa;
+}
+
+/* Demo content for scrolling */
+.demo-content {
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.demo-content h2 {
+  margin-bottom: 20px;
+  color: #4ecdc4;
+}
+
+.demo-content p {
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 20px;
 }

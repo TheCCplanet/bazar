@@ -11,7 +11,7 @@ import (
 
 var (
 	ErrUserNotFound      = errors.New("user_not_found")
-	ErrIncorrectPasswrod = errors.New("incorrect_passwrod")
+	ErrIncorrectPassword = errors.New("incorrect_password")
 )
 
 func Login(req modle.LoginRequest) (*modle.LoginResponse, error) {
@@ -27,13 +27,13 @@ func Login(req modle.LoginRequest) (*modle.LoginResponse, error) {
 	// dev test
 	h := utils.HashPassword(req.Password) // hash password
 
-	log.Printf("Entered passwrod: %v \n Stored passwrod:%s \n passwrod : %s", h, storedUser.Password_hash, req.Password)
+	log.Printf("Entered password: %v \n Stored password:%s \n password : %s", h, storedUser.Password_hash, req.Password)
 
 	if err = utils.ComparePasswordAndHash(req.Password, storedUser.Password_hash); err != nil {
 		// Send Error and tell clents username or password is wronge
 
 		// log.Println("faild to compair client password with stored pass:\n", err)
-		return nil, ErrIncorrectPasswrod
+		return nil, ErrIncorrectPassword
 	}
 	// send AccessToken , TokenType, ExpiresIN
 	// and redirect client to the next path (home)

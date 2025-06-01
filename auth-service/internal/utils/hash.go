@@ -12,8 +12,8 @@ func HashPassword(password string) string {
 		log.Println("Faild to Hash password:\n", err)
 		return ""
 	}
-	log.Println("passwrod :", password)
-	log.Println("Hash passwrod :", string(bytes))
+	log.Println("passwrord :", password)
+	log.Println("Hash password :", string(bytes))
 
 	return string(bytes)
 }

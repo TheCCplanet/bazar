@@ -48,8 +48,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		loginResponse, err := service.Login(data)
 		if err != nil {
-			if errors.Is(err, service.ErrIncorrectPasswrod) {
-				// If passwrod was wrong
+			if errors.Is(err, service.ErrIncorrectPassword) {
+				// If password was wrong
 				log.Println("Incorrect password by client - \n", err)
 				service.SendNotification(w, http.StatusOK, "error", "Incorrect username or password", "")
 				return
