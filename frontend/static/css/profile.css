@@ -1,0 +1,112 @@
+/* Base theme */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: #02090a;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Form Container */
+.form-container {
+  width: 100%;
+  max-width: 480px;
+  background-color: #071214;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #1a2b2e;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Form */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.register-form h2 {
+  text-align: center;
+  color: #4ecdc4;
+  margin-bottom: 10px;
+}
+
+/* Input Group */
+.form-group {
+  position: relative;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #0d1a1d;
+  border: 1px solid #1a2b2e;
+  border-radius: 6px;
+  color: white;
+  outline: none;
+  font-size: 1rem;
+}
+
+.form-group label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  color: #aaa;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: 0.2s ease all;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label {
+  top: -10px;
+  left: 10px;
+  font-size: 0.75rem;
+  color: #4ecdc4;
+  background: #071214;
+  padding: 0 4px;
+}
+
+/* File Upload */
+.file-upload input[type="file"] {
+  margin-top: 8px;
+  background-color: transparent;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.file-upload img {
+  display: none;
+  margin-top: 12px;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #2e3e42;
+}
+
+/* Button */
+button {
+  background-color: #4ecdc4;
+  color: #02090a;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #3abbb3;
+}

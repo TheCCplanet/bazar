@@ -14,6 +14,7 @@ func main() {
 	http.HandleFunc("/", handlers.IndexHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
 	http.HandleFunc("/home", handlers.HomeHandler)
+	http.HandleFunc("/profile", handlers.ProfileHandler)
 
 	log.Println("Server started on http://localhost:8080")
 

@@ -5,9 +5,9 @@ import (
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	// Set CORS headers
 
-	// Handle actual request
+	// check client's jwt token with auth-service
+
 	if r.Method == http.MethodGet {
 		http.ServeFile(w, r, "templates/home.html")
 		return

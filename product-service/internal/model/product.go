@@ -6,5 +6,5 @@ type Product struct {
 	Description string
 	Price       int
 	Quantity    int
-	Image       string
+	Images      []string
 }

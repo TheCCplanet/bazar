@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func ValidateTokenHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Validate token handler +")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -19,28 +21,35 @@ func ValidateTokenHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-
-	log.Println("Validate handler is running +")
-	cookie, err := r.Cookie("access-token")
-	if err != nil {
-		// ignore or send somthing to act as defualt
+	var (
+		token string
+		err   error
+	)
+	if authHeader := r.Header.Get("authorization"); authHeader != "" {
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			token = strings.TrimPrefix(authHeader, "Bearer ")
+		} else {
+			http.Error(w, "Invalid authorization format. use bearer", http.StatusBadRequest)
+		}
+	} else if cookie, err := r.Cookie("access-token"); err == nil {
+		token = cookie.Value
+	} else {
 		http.Error(w, "Access token not provided", http.StatusBadRequest)
 		return
 	}
-	claims, err := utils.VerifyToken(cookie.Value)
+	log.Println("token:", token)
+	claims, err := utils.VerifyToken(token)
 	if err != nil {
-		//ignore of send somthing to act as defualt
+		log.Println("invalid token :", err)
 		http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
 	}
-	log.Println("claims: ", claims)
-	// send client to user-service
+
 	response := map[string]interface{}{
 		"username": claims.UserID,
 		"exp":      claims.ExpiresAt,
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
-	log.Println("Succesfuly token verify ++++++")
+	log.Println("Token validation succesful")
 }
