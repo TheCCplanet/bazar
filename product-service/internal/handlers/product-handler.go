@@ -19,7 +19,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("product HOME")
 	_, err := service.CheckTokenValidity(r)
 	if err != nil {
-		log.Println("Invalid token:", err)
+		log.Println(err)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}

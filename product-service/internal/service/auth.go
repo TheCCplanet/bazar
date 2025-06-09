@@ -38,7 +38,7 @@ func CheckTokenValidity(r *http.Request) (int, error) {
 	if resp.StatusCode == http.StatusOK {
 		log.Println("✅ Token is valid")
 		var user UserResponse
-		err = json.NewDecoder(r.Body).Decode(&user)
+		err = json.NewDecoder(resp.Body).Decode(&user)
 		if err != nil {
 			return 0, fmt.Errorf("Faild to Decode data")
 		}
