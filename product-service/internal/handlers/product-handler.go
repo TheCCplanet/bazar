@@ -16,17 +16,8 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-
-	cookie, err := r.Cookie("access-token")
-	if err != nil {
-		log.Println("Failed to extract cookie:", err)
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-	token := cookie.Value
-	log.Println("token:", token)
-
-	err = service.CheckTokenValidity(token)
+	log.Println("product HOME")
+	_, err := service.CheckTokenValidity(r)
 	if err != nil {
 		log.Println("Invalid token:", err)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)

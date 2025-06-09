@@ -2,45 +2,468 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Client Registration</title>
-  <link rel="stylesheet" href="static/css/profile.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Dashboard | Bazar Marketplace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/static/css/profile.css">
+  <link rel="stylesheet" href="/static/css/upload-product-section.css">
 </head>
 <body>
-  <div class="form-container">
-    <form class="register-form" id="registerForm">
-      <h2>Register Your Profile</h2>
-
-      <div class="form-group">
-        <input type="text" name="fullname" required>
-        <label>Full Name</label>
+  <header class="navbar">
+    <div class="left-section">
+      <button class="toggle-sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="logo">
+        <i class="fas fa-store"></i>
+        Bazar
       </div>
-
-      <div class="form-group">
-        <input type="email" name="email" required>
-        <label>Email</label>
+      <div class="user-welcome">Welcome back, Alex!</div>
+    </div>
+    <div class="right-section">
+      <div class="notification-icon">
+        <i class="fas fa-bell"></i>
+        <div class="notification-badge">3</div>
       </div>
+      <div class="profile-pic">AJ</div>
+    </div>
+  </header>
 
-      <div class="form-group">
-        <input type="password" name="password" required>
-        <label>Password</label>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-user-circle"></i> My Account</h2>
       </div>
-
-      <div class="form-group">
-        <textarea name="bio" rows="3" required></textarea>
-        <label>Short Bio</label>
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="#" class="menu-link active" data-section="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link" data-section="profile">
+            <i class="fas fa-user-edit"></i>
+            <span>Edit Profile</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link" data-section="products">
+            <i class="fas fa-box"></i>
+            <span>My Products</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link" data-section="orders">
+            <i class="fas fa-shopping-bag"></i>
+            <span>My Orders</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link" data-section="bids">
+            <i class="fas fa-gavel"></i>
+            <span>My Bids</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link" data-section="upload">
+            <i class="fas fa-plus-circle"></i>
+            <span>Upload Product</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link" data-section="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        Bazar Marketplace v2.0
       </div>
+    </aside>
 
-      <div class="form-group file-upload">
-        <label for="profilePic">Profile Picture</label>
-        <input type="file" id="profilePic" name="profilePic" accept="image/*" required>
-        <img id="preview" alt="Profile Preview" />
-      </div>
-
-      <button type="submit">Register</button>
-    </form>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard Overview -->
+      <section id="dashboard" class="dashboard-section active">
+        <div class="section-header">
+          <h2><i class="fas fa-home"></i> Dashboard Overview</h2>
+          <p>Welcome back! Here's what's happening with your account today.</p>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fas fa-box-open"></i>
+            <h3>24</h3>
+            <p>Active Products</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>18</h3>
+            <p>Total Orders</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-wallet"></i>
+            <h3>5.24 ETH</h3>
+            <p>Account Balance</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-star"></i>
+            <h3>4.8</h3>
+            <p>Seller Rating</p>
+          </div>
+        </div>
+        
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3><i class="fas fa-chart-line"></i> Sales Performance</h3>
+            <div class="chart-container">
+              <canvas id="salesChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3><i class="fas fa-coins"></i> Revenue Sources</h3>
+            <div class="chart-container">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <div class="section-header">
+          <h2><i class="fas fa-history"></i> Recent Activity</h2>
+          <p>Your latest actions and notifications.</p>
+        </div>
+        
+        <div class="orders-grid">
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Order #BAZ-2837</div>
+              <div class="order-status status-pending">Pending</div>
+            </div>
+            <div class="order-product">
+              <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1543857778-c4a1a569e7bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Abstract Composition">
+              </div>
+              <div class="product-info">
+                <div class="product-name">Abstract Composition</div>
+                <div class="product-price">2.45 ETH</div>
+                <div class="product-category">Digital Art</div>
+              </div>
+            </div>
+            <div class="order-details">
+              <div class="detail-item">
+                <div class="detail-label">Order Date</div>
+                <div class="detail-value">Oct 12, 2023</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Delivery</div>
+                <div class="detail-value">Digital Download</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Buyer</div>
+                <div class="detail-value">@crypto_collector</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Payment Method</div>
+                <div class="detail-value">ETH Wallet</div>
+              </div>
+            </div>
+            <button class="btn btn-block">
+              <i class="fas fa-truck"></i> Track Order
+            </button>
+          </div>
+          
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Order #BAZ-2791</div>
+              <div class="order-status status-shipped">Shipped</div>
+            </div>
+            <div class="order-product">
+              <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Neon Jungle">
+              </div>
+              <div class="product-info">
+                <div class="product-name">Neon Jungle</div>
+                <div class="product-price">1.78 ETH</div>
+                <div class="product-category">Digital Art</div>
+              </div>
+            </div>
+            <div class="order-details">
+              <div class="detail-item">
+                <div class="detail-label">Order Date</div>
+                <div class="detail-value">Oct 5, 2023</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Delivery</div>
+                <div class="detail-value">Physical Shipment</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Buyer</div>
+                <div class="detail-value">@art_lover</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Payment Method</div>
+                <div class="detail-value">Credit Card</div>
+              </div>
+            </div>
+            <button class="btn btn-block">
+              <i class="fas fa-truck"></i> Track Shipment
+            </button>
+          </div>
+        </div>
+      </section>
+      <section id="upload" class="dashboard-section">
+        <div class="form-container">
+          <div class="form-header">
+            <h1>Upload Your Product</h1>
+            <p>List your item on Bazar Marketplace. Fill in the details and set it as an auction or regular sale.</p>
+          </div>
+      
+          <div class="form-card">
+            <form id="productForm">
+              <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Product Information</h3>
+                <div class="form-group">
+                  <label for="productName">Product Name *</label>
+                  <input type="text" id="productName" class="form-control" placeholder="Enter product name" required>
+                </div>
+                <div class="form-group">
+                  <label for="productCategory">Category *</label>
+                  <select id="productCategory" class="form-control" required>
+                    <option value="">Select a category</option>
+                    <option value="art">Digital Art</option>
+                    <option value="collectibles">Collectibles</option>
+                    <option value="photography">Photography</option>
+                    <option value="music">Music</option>
+                    <option value="domain">Domain Names</option>
+                    <option value="virtual">Virtual Worlds</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="productDescription">Description *</label>
+                  <textarea id="productDescription" class="form-control" placeholder="Describe your product in detail..." required></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="productPrice">Price (ETH) *</label>
+                  <input type="number" id="productPrice" class="form-control" placeholder="0.00" min="0.01" step="0.01" required>
+                </div>
+              </div>
+              
+              <div class="form-section">
+                <div class="toggle-container">
+                  <div class="toggle-label">Auction Product</div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="auctionToggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                
+                <div class="auction-fields" id="auctionFields">
+                  <div class="form-group">
+                    <label for="startingBid">Starting Bid (ETH) *</label>
+                    <input type="number" id="startingBid" class="form-control" placeholder="0.00" min="0.01" step="0.01">
+                  </div>
+                  <div class="form-group">
+                    <label for="auctionDuration">Auction Duration *</label>
+                    <select id="auctionDuration" class="form-control">
+                      <option value="1">1 day</option>
+                      <option value="3" selected>3 days</option>
+                      <option value="5">5 days</option>
+                      <option value="7">7 days</option>
+                      <option value="14">14 days</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="reservePrice">Reserve Price (ETH)</label>
+                    <input type="number" id="reservePrice" class="form-control" placeholder="Optional" min="0.01" step="0.01">
+                  </div>
+                </div>
+              </div>
+      
+              <div class="form-section image-upload-section">
+                <h3><i class="fas fa-images"></i> Product Images</h3>
+                <div class="upload-area" id="uploadArea">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <h4>Drag & Drop or Click to Upload</h4>
+                  <p>Upload at least 3 high-quality images (JPG, PNG, or GIF). Max 10MB per image.</p>
+                  <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                </div>
+                
+                <div class="image-previews" id="imagePreviews">
+                  <!-- Image previews will be added here -->
+                </div>
+              </div>
+      
+              <div class="submit-section">
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-rocket"></i> List Product
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+      <!-- My Bids Section -->
+      <section id="bids" class="dashboard-section">
+        <div class="section-header">
+          <h2><i class="fas fa-gavel"></i> My Bids</h2>
+          <p>Manage your active bids and bidding history.</p>
+        </div>
+        
+        <div class="tabs">
+          <div class="tab active" data-tab="active">Active Bids</div>
+          <div class="tab" data-tab="history">Bid History</div>
+          <div class="tab" data-tab="won">Won Auctions</div>
+        </div>
+        
+        <div class="orders-grid">
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Auction #AUCT-482</div>
+              <div class="order-status status-pending">Active</div>
+            </div>
+            <div class="order-product">
+              <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Digital Abyss">
+              </div>
+              <div class="product-info">
+                <div class="product-name">Digital Abyss</div>
+                <div class="product-price">3.21 ETH</div>
+                <div class="product-category">Digital Art</div>
+              </div>
+            </div>
+            <div class="order-details">
+              <div class="detail-item">
+                <div class="detail-label">Time Remaining</div>
+                <div class="detail-value">2h 45m</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Current Bid</div>
+                <div class="detail-value">3.21 ETH</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Your Bid</div>
+                <div class="detail-value">3.10 ETH</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Bidders</div>
+                <div class="detail-value">12</div>
+              </div>
+            </div>
+            <div class="bid-section">
+              <div class="current-bid">
+                <div>Current Highest Bid: <strong>3.21 ETH</strong></div>
+                <div>by @crypto_king</div>
+              </div>
+              <div class="bid-input">
+                <input type="number" min="3.22" step="0.01" value="3.22" placeholder="Enter bid amount">
+                <button class="bid-btn">Bid</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Auction #AUCT-477</div>
+              <div class="order-status status-pending">Active</div>
+            </div>
+            <div class="order-product">
+              <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Virtual Symphony">
+              </div>
+              <div class="product-info">
+                <div class="product-name">Virtual Symphony</div>
+                <div class="product-price">1.55 ETH</div>
+                <div class="product-category">Music NFT</div>
+              </div>
+            </div>
+            <div class="order-details">
+              <div class="detail-item">
+                <div class="detail-label">Time Remaining</div>
+                <div class="detail-value">1d 3h</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Current Bid</div>
+                <div class="detail-value">1.55 ETH</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Your Bid</div>
+                <div class="detail-value">1.50 ETH</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Bidders</div>
+                <div class="detail-value">8</div>
+              </div>
+            </div>
+            <div class="bid-section">
+              <div class="current-bid">
+                <div>Current Highest Bid: <strong>1.55 ETH</strong></div>
+                <div>by @music_lover</div>
+              </div>
+              <div class="bid-input">
+                <input type="number" min="1.56" step="0.01" value="1.56" placeholder="Enter bid amount">
+                <button class="bid-btn">Bid</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Auction #AUCT-469</div>
+              <div class="order-status status-delivered">Won</div>
+            </div>
+            <div class="order-product">
+              <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Quantum Waves">
+              </div>
+              <div class="product-info">
+                <div class="product-name">Quantum Waves</div>
+                <div class="product-price">0.89 ETH</div>
+                <div class="product-category">Digital Art</div>
+              </div>
+            </div>
+            <div class="order-details">
+              <div class="detail-item">
+                <div class="detail-label">Winning Bid</div>
+                <div class="detail-value">0.89 ETH</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Auction Ended</div>
+                <div class="detail-value">Oct 10, 2023</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Total Bids</div>
+                <div class="detail-value">27</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">Ready for download</div>
+              </div>
+            </div>
+            <button class="btn btn-block">
+              <i class="fas fa-download"></i> Download Now
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <script src="static/js/profile.js"></script>
+  <footer>
+    &copy; 2023 Bazar Marketplace. All rights reserved.
+  </footer>
+
+ 
+  <script src="/static/js/profile.js"></script>
+  <script src="/static/js/upload-product-section.js"></script>
 </body>
 </html>

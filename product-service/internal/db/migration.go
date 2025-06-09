@@ -11,7 +11,6 @@ func RunMigrations() error {
 		description TEXT,
 		price NUMERIC(10, 2),
 		quantity INT DEFAULT 1,
-		image_url TEXT,
 		category VARCHAR(100),
 		is_active BOOLEAN DEFAULT TRUE,
 		created_at TIMESTAMP DEFAULT NOW()

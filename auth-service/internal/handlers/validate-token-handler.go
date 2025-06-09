@@ -46,8 +46,8 @@ func ValidateTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := map[string]interface{}{
-		"username": claims.UserID,
-		"exp":      claims.ExpiresAt,
+		"user_id": claims.UserID,
+		"exp":     claims.ExpiresAt,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)

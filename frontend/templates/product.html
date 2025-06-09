@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product</title>
+</head>
+<body>
+<h2>Add Product</h2>
+<form id="productForm">
+    <input type="text" name="title" placeholder="Title" required><br><br>
+    <textarea name="description" placeholder="Description" required></textarea><br><br>
+    <input type="number" name="price" placeholder="Price" step="0.01" required><br><br>
+    <input type="text" name="category" placeholder="Category" required><br><br>
+    <input type="number" name="primary_image_index" placeholder="Primary image index" value="0" required><br><br>
+    <input type="file" name="images" multiple required><br><br>
+    <button type="submit">Upload</button>
+</form>
+
+<script>
+    console.log("jj")
+    document.getElementById('productForm').addEventListener('submit',async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const images = form.querySelector('input[name="images"]').files;
+        for (let i = 0; i < images.length;i++) {
+            formData.append('images', images[i]);
+        }
+        const res = await fetch('http://localhost:8080/upload',{
+            method: 'POST',
+            body: formData
+        });
+        console.log(res)
+
+    });
+
+</script>
+</body>
+</html>
