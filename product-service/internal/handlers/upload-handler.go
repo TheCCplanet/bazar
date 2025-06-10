@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -39,7 +40,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
 	}
-	fmt.Println(r.Body)
 	r.Body = http.MaxBytesReader(w, r.Body, config.MaxUploadSize)
 	if err := r.ParseMultipartForm(config.MaxUploadSize); err != nil {
 		// request to large
@@ -54,16 +54,27 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		Category:    r.FormValue("category"),
 	}
 	fmt.Println("product:", product)
-	if product.Price, err = strconv.ParseFloat(r.FormValue("price"), 64); err == nil {
-		log.Println("faild to format uploaded price to float64")
+	if product.Price, err = strconv.ParseFloat(r.FormValue("price"), 64); err != nil {
+		log.Println("faild to format uploaded price to float64", err)
 		return
 	}
-	if product.Quantity, err = strconv.ParseInt(r.FormValue("quantity"), 64, 10); err != nil {
-		log.Println("faild to convert quantiti to int16")
+	quantityStr := r.FormValue("quantity")
+	if quantityStr == "" {
+		// Handle empty quantity case
+		log.Println("quantity field is empty")
 		return
 	}
+
+	// Correct parsing with proper error handling
+	q, err := strconv.ParseInt(quantityStr, 10, 64)
+	if err != nil {
+		log.Println("failed to convert quantity to int64:", err)
+		return
+	}
+	product.Quantity = q
 	primaryImageID := r.FormValue("primaryImage")
 	files := r.MultipartForm.File["images"]
+	fmt.Println("image Count:", len(files))
 	for _, fileHeader := range files {
 		file, err := fileHeader.Open()
 		if err != nil {
@@ -75,7 +86,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		//ceck file type
 		ext := filepath.Ext(fileHeader.Filename)
-		newFileName := strconv.FormatInt(time.Now().UnixNano(), 10) + ext
+		newFileName := fmt.Sprintf("%d-%d%s", time.Now().UnixNano(), rand.Intn(10000), ext)
 		filePath := filepath.Join(uploadDir, newFileName)
 		// uploads/27374328478.png
 		dst, err := os.Create(filePath)
@@ -83,7 +94,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error create file ---", err)
 			return
 		}
-		dst.Close()
+		defer dst.Close()
 		if _, err := io.Copy(dst, file); err != nil {
 			log.Println("Faild to copy file in to the path:", err)
 			return
@@ -95,4 +106,5 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("success ++++++++++++")
 
 	}
+	return
 }
