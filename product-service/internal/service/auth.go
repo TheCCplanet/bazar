@@ -10,13 +10,13 @@ import (
 )
 
 type UserResponse struct {
-	ID int `json:"user_id"`
+	ID int64 `json:"user_id"`
 }
 
 // need 2 func
 // 1 just chekc the token
 // 2 check and return userID
-func CheckTokenValidity(r *http.Request) (int, error) {
+func CheckTokenValidity(r *http.Request) (int64, error) {
 
 	cookie, err := r.Cookie("access-token")
 	if err != nil {

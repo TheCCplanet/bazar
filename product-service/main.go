@@ -22,7 +22,7 @@ func main() {
 		log.Println("Migration Error:", err)
 		return
 	}
-	os.MkdirAll("uploads", os.ModePerm)
+	os.MkdirAll("./uploads", os.ModePerm)
 
 	http.HandleFunc("/products", handlers.ProductHandler)
 	http.HandleFunc("/upload", handlers.UploadHandler)

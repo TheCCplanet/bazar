@@ -3,7 +3,6 @@ package handlers
 import (
 	"bazar/internal/utils"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -44,7 +43,6 @@ func ValidateTokenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
 	}
-	fmt.Println(claims)
 
 	response := map[string]interface{}{
 		"user_id": claims.UserID,

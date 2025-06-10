@@ -203,7 +203,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       const res = await fetch('http://localhost:8082/upload',{
         method: 'POST',
-        body: formData
+        body: formData,
+        credentials: 'include'
           
         }
       );

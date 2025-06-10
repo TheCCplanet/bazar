@@ -16,7 +16,6 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-	log.Println("product HOME")
 	_, err := service.CheckTokenValidity(r)
 	if err != nil {
 		log.Println(err)
